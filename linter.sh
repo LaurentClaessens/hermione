@@ -16,7 +16,7 @@ lint_one_file()
 {
     FILENAME=$1
     FILEPATH=$MAIN_DIR/$FILENAME
-    echo $FILEPATH
+    echo "$FILEPATH"\r
     if [[ "$FILEPATH" == *\.py ]]; then
         python_lint $FILEPATH
     fi

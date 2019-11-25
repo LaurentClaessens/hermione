@@ -39,6 +39,11 @@ install_venv()
 install_pip_packages()
 {
     pip3_install youtube-dl
+    pip3_install requests
+    pip3_install lxml
+    pip3_install pylint
+    pip3_install pydocstyle
+    pip3_install pycodestyle
 }
 
 install_venv
