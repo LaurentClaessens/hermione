@@ -3,21 +3,19 @@
 
 """Some functions to deal with the URLs of my rss."""
 
-import sys
-from pathlib import Path
-import threading
-import youtube_dl
+
+from src.utilities import StdRedirect
+from src.rss_thread import RssThread
 
 
-
-dprint = print
+dprint = print  # pylint:disable=invalid-name
 
 
 def do_work():
     """Make the work with the given URL."""
     while 1:
         print("Quelle est l'URL ? ")
-        url =  input("")
+        url = input("")
         RssThread(url).start()
 
 

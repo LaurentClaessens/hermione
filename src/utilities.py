@@ -1,12 +1,14 @@
 """Some utilities."""
 
+import sys
+import threading
+from pathlib import Path
 
 import hashlib
 import requests
-from pathlib import Path
 
 
-dprint = print
+dprint = print  # pylint:disable=invalid-name
 
 
 def hash_text(text):
