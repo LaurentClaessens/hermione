@@ -2,3 +2,7 @@
 *.swo
 *~
 venv/
+cache/*
+flash
+logs/*
+__pycache__/*
