@@ -11,6 +11,37 @@ import requests
 dprint = print  # pylint:disable=invalid-name
 
 
+class WarningContext:
+    """Add some indent to 'print'."""
+
+    def __init__(self, title):
+        """Initialize."""
+        self.title = title
+        self.old_stdout = None
+
+    def write(self, text):
+        """Write the text with an identation."""
+        new_text = "   " + text
+        if self.old_stdout:
+            self.old_stdout.write(new_text)
+        else:
+            print(new_text)
+    
+    def __enter__(self):
+        """
+        Enter the context manager.
+
+        Get stdout.
+        """
+        print(self.title)
+        self.old_stdout = sys.stdout
+        sys.stdout = self
+
+    def __exit__(self, type, value, traceback):
+        """Exit the context manager"""
+        sys.stdout = self.old_stdout
+
+
 def hash_text(text):
     """Return a hash of the given text."""
     hasher = hashlib.sha256()
@@ -34,6 +65,7 @@ def cache_or_download(url):
         print(f"write cache: ", filename)
         cached_file.write(content)
     return content
+
 
 class StdRedirect:
     """Redirect stdout."""

@@ -1,6 +1,14 @@
-"""The functions for youtube."""
+#!venv/bin/python3
 
-import youtube_dl
+
+"""Download a video from youtube."""
+
+
+from src.utilities import WarningContext
+
+
+
+dprint = print  # pylint:disable=invalid-name
 
 
 class FromYoutube:
@@ -49,3 +57,6 @@ class FromYoutube:
         }
         with youtube_dl.YoutubeDL(ydl_opts) as ydl:
             ydl.download([self.url])
+
+url = "https://www.youtube.com/watch?v=fkb1G4RPwwU"
+
