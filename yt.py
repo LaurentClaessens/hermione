@@ -4,59 +4,66 @@
 """Download a video from youtube."""
 
 
+import youtube_dl
 from src.utilities import WarningContext
-
 
 
 dprint = print  # pylint:disable=invalid-name
 
 
-class FromYoutube:
-    """Manage the youtube download."""
-    def __init__(self, url, thread):
-        """Initialize. Keep a hand on the current thread."""
-        self.url = url
-        self.thread = thread
 
-    def debug(self, msg):
-        """
-        Log the debug from youtube-dl.
+def is_okay(video_format):
+    """
+    Say if a video format is okay.
 
-        This function also catches the string 
-        'has already been downloaded and merged'
-        because it is the signal that the whole process is finished.
-        """
-        print('debug')
-        key_string = 'has already been downloaded and merged'
-        print('   ' + msg)
-        if key_string in msg:
-            self.thread.finished = True
+    It has to contain the video and the sound.
+    """
+    if not video_format['asr']:
+        return False
+    if "only" in video_format["format"]:
+        return False
+    return True
 
-    def warning(self, msg):
-        """Log the warning messages from youtube-dl."""
-        print('warning')
-        print('   ' + msg)
 
-    def error(self, msg):
-        """Log the error messages from youtube-dl."""
-        print('error')
-        print('   ' + msg)
+def ask_format(url):
+    """
+    Ask for the requested video format.
 
-    def progress_hook(self, data):
-        """Progress in youtube-dl."""
-        # Using 'WarningContext' here causes reals bugs.
-        print("Status report:")
-        print(f"   filename: {data['filename']}")
-        print(f"   status: {data['status']}")
+    @return {string}
+        The number of the requested video format.
+    """
+    ydl_opts = {}
+    with youtube_dl.YoutubeDL(ydl_opts) as ydl:
+        infos = ydl.extract_info(url, download=False)
 
-    def start(self):
-        """What I do when the URL is from youtube."""
-        ydl_opts = {
-            'progress_hooks': [self.progress_hook],
-            'logger':self
-        }
-        with youtube_dl.YoutubeDL(ydl_opts) as ydl:
-            ydl.download([self.url])
+    for video_format in infos["formats"]:
+        if not is_okay(video_format):
+            continue
+        with WarningContext(video_format['format_id']):
+            print(f"format {video_format['format']}")
+            print(f"filesize {video_format['filesize']}")
 
-url = "https://www.youtube.com/watch?v=fkb1G4RPwwU"
+    format_number = input("What format do you want ? ")
+    return format_number
 
+
+def download(url, format_number):
+    """Download the video."""
+    ydl_opts = {
+        'format': format_number,
+        'noplaylist' : True}
+
+    print("Vais télécharger ", url)
+    with youtube_dl.YoutubeDL(ydl_opts) as ydl:
+        ydl.download([url])
+
+    print("Done.")
+
+
+def do_work():
+    """Do the work."""
+    url = "https://www.youtube.com/watch?v=fkb1G4RPwwU"
+    video_format = ask_format(url)
+    download(url, video_format)
+
+do_work()

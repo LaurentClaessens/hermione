@@ -6,3 +6,4 @@ cache/*
 flash
 logs/*
 __pycache__/*
+src/__pycache__

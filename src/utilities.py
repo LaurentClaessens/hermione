@@ -1,6 +1,7 @@
 """Some utilities."""
 
 import sys
+import json
 import threading
 from pathlib import Path
 
@@ -9,6 +10,14 @@ import requests
 
 
 dprint = print  # pylint:disable=invalid-name
+
+
+def write_json_file(json_dict, filename):
+    """Write the json dictionary in a file."""
+    dump = json.dumps(json_dict, indent=4)
+
+    with open(filename, 'w') as json_file:
+        json_file.write(dump)
 
 
 class WarningContext:
@@ -26,7 +35,7 @@ class WarningContext:
             self.old_stdout.write(new_text)
         else:
             print(new_text)
-    
+
     def __enter__(self):
         """
         Enter the context manager.
@@ -37,7 +46,7 @@ class WarningContext:
         self.old_stdout = sys.stdout
         sys.stdout = self
 
-    def __exit__(self, type, value, traceback):
+    def __exit__(self, *exc):
         """Exit the context manager"""
         sys.stdout = self.old_stdout
 
