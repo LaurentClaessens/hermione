@@ -3,7 +3,7 @@
 
 """Download a video from youtube."""
 
-
+import sys
 import youtube_dl
 from src.utilities import WarningContext
 
@@ -36,14 +36,23 @@ def ask_format(url):
     with youtube_dl.YoutubeDL(ydl_opts) as ydl:
         infos = ydl.extract_info(url, download=False)
 
-    for video_format in infos["formats"]:
-        if not is_okay(video_format):
-            continue
-        with WarningContext(video_format['format_id']):
-            print(f"format {video_format['format']}")
-            print(f"filesize {video_format['filesize']}")
+    print("")
+    format_list = []
+    with WarningContext("Here are the available formats"):
+        for video_format in infos["formats"]:
+            if not is_okay(video_format):
+                continue
+            format_id = video_format['format_id']
+            size = video_format['filesize']
+            format_desc = video_format['format']
+            format_list.append(format_id)
+            with WarningContext(format_id):
+                print(f"format {format_desc}")
+                print(f"filesize {size}")
 
-    format_number = input("What format do you want ? ")
+    print("")
+    int_formats = [int(vid) for vid in format_list]
+    format_number = input(f"What format do you want {int_formats} ? ")
     return format_number
 
 
@@ -53,7 +62,7 @@ def download(url, format_number):
         'format': format_number,
         'noplaylist' : True}
 
-    print("Vais télécharger ", url)
+    print("")
     with youtube_dl.YoutubeDL(ydl_opts) as ydl:
         ydl.download([url])
 
@@ -62,8 +71,9 @@ def download(url, format_number):
 
 def do_work():
     """Do the work."""
-    url = "https://www.youtube.com/watch?v=fkb1G4RPwwU"
+    url = sys.argv[1]
     video_format = ask_format(url)
     download(url, video_format)
+
 
 do_work()
