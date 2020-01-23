@@ -50,8 +50,12 @@ def ask_format(url):
                 print(f"format {format_desc}")
                 print(f"filesize {size}")
 
-    print("")
     int_formats = [int(vid) for vid in format_list]
+
+    if set(int_formats) == {22, 18}:
+        print("I choose the format 18")
+        return 18
+    print("")
     format_number = input(f"What format do you want {int_formats} ? ")
     return format_number
 
