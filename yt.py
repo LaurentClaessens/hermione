@@ -62,6 +62,7 @@ def ask_format(url):
 
 def download(url, format_number):
     """Download the video."""
+    format_number = str(format_number)
     ydl_opts = {
         'format': format_number,
         'noplaylist' : True}
