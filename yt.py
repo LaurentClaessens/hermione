@@ -52,7 +52,7 @@ def ask_format(url):
 
     int_formats = [int(vid) for vid in format_list]
 
-    if set(int_formats) == {22, 18}:
+    if 18 in int_formats:
         print("I choose the format 18")
         return 18
     print("")

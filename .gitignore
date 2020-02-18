@@ -1,6 +1,8 @@
 *.swp
 *.swo
 *~
+*.mp4
+.kk.log
 venv/
 cache/*
 flash
