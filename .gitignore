@@ -3,6 +3,9 @@
 *~
 *.mp4
 .kk.log
+*.mp3
+regard.md
+.directory
 venv/
 cache/*
 flash
