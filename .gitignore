@@ -2,6 +2,7 @@
 *.swo
 *~
 *.mp4
+*.mp4.part
 .kk.log
 *.mp3
 regard.md
