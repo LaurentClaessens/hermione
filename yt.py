@@ -1,7 +1,11 @@
 #!venv/bin/python3
 
 
-"""Download a video from youtube."""
+"""
+Download a video from youtube.
+
+./yt url -22 to get max definition
+"""
 
 import sys
 import youtube_dl
@@ -52,6 +56,9 @@ def ask_format(url):
 
     int_formats = [int(vid) for vid in format_list]
 
+    if "-22" in sys.argv:
+        print("I choose the format 22")
+        return 22
     if 18 in int_formats:
         print("I choose the format 18")
         return 18
@@ -65,7 +72,7 @@ def download(url, format_number):
     format_number = str(format_number)
     ydl_opts = {
         'format': format_number,
-        'noplaylist' : True}
+        'noplaylist': True}
 
     print("")
     with youtube_dl.YoutubeDL(ydl_opts) as ydl:
@@ -74,8 +81,17 @@ def download(url, format_number):
     print("Done.")
 
 
+def get_url(arg):
+    """Build the URL from the argument."""
+    if arg.startswith("https"):
+        return arg
+    else:
+        return f"https://youtu.be/{arg}"
+
+
 def do_work():
     """Do the work."""
+    url = get_url(sys.argv[1])
     url = sys.argv[1]
     video_format = ask_format(url)
     download(url, video_format)
