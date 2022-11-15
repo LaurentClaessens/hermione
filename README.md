@@ -27,9 +27,3 @@ Pour avoir la liste de toutes les vidéos d'une chaine:
 ```
 youtube-dl --get-filename -o "%(id)s" "https://www.youtube.com/channel/UCYNbYGl89UUowy8oXkipC-Q"
 ```
-
-## Pour s'abonner au RSS
-
-```
-https://www.youtube.com/feeds/videos.xml?channel_id=UCYNbYGl89UUowy8oXkipC-Q
-```

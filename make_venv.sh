@@ -15,7 +15,7 @@
 # cd /usr/lib/x86_64-linux-gnu
 # sudo ln -s libffi.so.7 libffi.so.6
 
-VERSION=3.7.4
+VERSION=3.8.3
 PYTHON3=~/.pyenv/versions/$VERSION/bin/python3
 MAIN_DIR=$PWD
 VENV_DIR=$MAIN_DIR/venv
@@ -37,6 +37,8 @@ upgrade_pip()
 
 install_venv()
 {
+    echo $PYTHON3
+    echo $VENV_DIR
     $PYTHON3 -m venv $VENV_DIR
 }
 

@@ -15,16 +15,15 @@ from src.utilities import WarningContext
 dprint = print  # pylint:disable=invalid-name
 
 
-
 def is_okay(video_format):
     """
     Say if a video format is okay.
 
     It has to contain the video and the sound.
     """
-    if not video_format['asr']:
-        return False
     if "only" in video_format["format"]:
+        return False
+    if not video_format.get('asr', True):
         return False
     return True
 
