@@ -46,7 +46,7 @@ def ask_format(url):
             if not is_okay(video_format):
                 continue
             format_id = video_format['format_id']
-            size = video_format['filesize']
+            size = video_format.get('filesize', -1)
             format_desc = video_format['format']
             format_list.append(format_id)
             with WarningContext(format_id):
