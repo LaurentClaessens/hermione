@@ -8,8 +8,10 @@ Download a video from youtube.
 """
 
 import sys
-import youtube_dl
+import yt_dlp
 from src.utilities import WarningContext
+
+youtube_dl = yt_dlp
 
 
 dprint = print  # pylint:disable=invalid-name
@@ -53,17 +55,12 @@ def ask_format(url):
                 print(f"format {format_desc}")
                 print(f"filesize {size}")
 
-    int_formats = [int(vid) for vid in format_list]
-
     if "-22" in sys.argv:
         print("I choose the format 22")
         return 22
-    if 18 in int_formats:
+    if "18" in format_list:
         print("I choose the format 18")
         return 18
-    print("")
-    format_number = input(f"What format do you want {int_formats} ? ")
-    return format_number
 
 
 def download(url, format_number):

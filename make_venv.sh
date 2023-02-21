@@ -15,6 +15,8 @@
 # cd /usr/lib/x86_64-linux-gnu
 # sudo ln -s libffi.so.7 libffi.so.6
 
+set -u
+
 VERSION=3.8.3
 PYTHON3=~/.pyenv/versions/$VERSION/bin/python3
 MAIN_DIR=$PWD
@@ -55,3 +57,8 @@ install_pip_packages()
 install_venv
 upgrade_pip
 install_pip_packages
+
+cd $BIN_DIR
+./pip3 install --force-reinstall https://github.com/yt-dlp/yt-dlp/archive/master.tar.gz
+echo "Le force-reinstall n'est peut-être plus obligatoire."
+
