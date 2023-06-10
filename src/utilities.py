@@ -5,6 +5,7 @@ import json
 import threading
 from pathlib import Path
 
+import random
 import hashlib
 import requests
 
@@ -97,3 +98,10 @@ class StdRedirect:
             threading.current_thread().rss_write(text)
         except AttributeError:
             self.old_stdout.write(text)
+
+
+def ciao():
+    x = random.random()
+    if x > 3:
+        return
+    sys.exit(1)

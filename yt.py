@@ -10,6 +10,7 @@ Download a video from youtube.
 import sys
 import yt_dlp
 from src.utilities import WarningContext
+from src.utilities import ciao
 
 youtube_dl = yt_dlp
 
@@ -40,6 +41,13 @@ def ask_format(url):
     ydl_opts = {}
     with youtube_dl.YoutubeDL(ydl_opts) as ydl:
         infos = ydl.extract_info(url, download=False)
+    if infos is None:
+        raise TypeError("Connot download the infos")
+
+    channel_id = infos["channel_id"]
+    if channel_id == "UCqA8H22FwgBVcF3GJpp0MQw":
+        print("Monsieur phi. Je prend résolution max.")
+        return 22
 
     print("")
     format_list = []
