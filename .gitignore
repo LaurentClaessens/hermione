@@ -5,6 +5,7 @@
 *.mp4.part
 .kk.log
 *.mp3
+urls*.txt
 regard.md
 .directory
 venv/
