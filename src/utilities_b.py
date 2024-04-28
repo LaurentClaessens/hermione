@@ -43,7 +43,8 @@ def ask_format(url):
     format_list = []
 
     k_formats = ["18", "231", "hls-1584-0", "hls-1616-1",
-                 "hls-2628-0", "hls-1584-1"]
+                 "hls-2628-0", "hls-1584-1", "hls-1744-0", "hls-2030-0",
+                 "hls-2050-0", "hls-1616-0"]
 
     for num in k_formats:
         if num in format_list:
