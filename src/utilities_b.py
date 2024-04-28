@@ -35,7 +35,7 @@ def ask_format(url):
     if infos is None:
         raise TypeError("Connot download the infos")
 
-    channel_id = infos["channel_id"]
+    channel_id = infos.get("channel_id")
     if channel_id == "UCqA8H22FwgBVcF3GJpp0MQw":
         print("Monsieur phi. Je prend résolution max.")
         return 22
@@ -53,10 +53,6 @@ def ask_format(url):
             with WarningContext(format_id):
                 print(f"format {format_desc}")
                 print(f"filesize {size}")
-
-    if "-22" in sys.argv:
-        print("I choose the format 22")
-        return 22
 
     k_formats = ["18", "231"]
 
