@@ -33,6 +33,14 @@ def get_new_urls(options: Options):
     lines = text.splitlines()
     for line in lines:
         if line not in options.already_submited:
+            print("")
+            print("")
+            print("")
+            print("new url found: ", line)
+            print("")
+            print("")
+            print("")
+            print("")
             yield line
 
 
@@ -42,12 +50,13 @@ def one_job(url: str):
         download(url)
     except UnkownFormat:
         options.with_error.append(url)
+        options.save_errors()
 
 
 options = Options()
 
 jobs = []
-with ThreadPoolExecutor(max_workers=10) as executor:
+with ThreadPoolExecutor(max_workers=5) as executor:
     while True:
         for url in get_new_urls(options):
             options.already_submited.append(url)
