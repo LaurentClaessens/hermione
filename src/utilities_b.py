@@ -20,12 +20,11 @@ def is_okay(video_format):
         return False
     return True
 
-def get_sizes(desc:str):
+
+def get_sizes(desc: str) -> tuple[int, int]:
     """
     Return the x,y sizes of the format description.
     """
-    if "x" not in desc:
-        return None, None
     parts = desc.split(" ")
     for part in parts:
         if "x" not in part:
@@ -34,8 +33,7 @@ def get_sizes(desc:str):
         x_size = int(nums[0])
         y_size = int(nums[1])
         return x_size, y_size
-    return None, None
-
+    return 0, 0
 
 
 def ask_format(url):
@@ -66,45 +64,15 @@ def ask_format(url):
         format_id = video_format['format_id']
         num_list.append(format_id)
 
-
     k_formats = ["18", "231"]
-    hls_formats = ["515", 
-                   "671",
-                   "880", 
-                   "2103",
-                 "1231", 
-                 "1344", 
-                 "1357", 
-                 "1388", 
-                 "1393", 
-                 "1399", 
-                 "1530", 
-                 "1500", 
-                 "1530", 
-                 "1541", 
-                 "1584", 
-                 "1420", 
-                 "1605", 
-                 "1616",
-                 "1648",
-                 "1723",
-                 "1744",
-                 "1773",
-                 "1821",
-                 "1829",
-                 "1871",
-                 "1932",
-                 "2030",
-                 "2050", 
-                 "2087", 
-                  "2283",
-                 "2551", 
-                 "2686",
-                 "3406"
-                 "3470"
-                 "3952"
-                 "5263"
-                 ]
+    hls_formats = ["515", "671", "880", "2103", "1231", "1344",
+                   "1357", "1388", "1393", "1399", "1530", "1500",
+                   "1530", "1541", "1584", "1420", "1605",
+                   "1616", "1648", "1723", "1744", "1773", "1821",
+                   "1829", "1871", "1932",
+                   "2030", "2050", "2087", "2283", "2551", "2686", "3406"
+                   "3470" "3952" "5263"
+                   ]
     for hls in hls_formats:
         k_formats.append(f"hls-{hls}-0")
         k_formats.append(f"hls-{hls}-1")
@@ -117,7 +85,6 @@ def ask_format(url):
     print("rechercher un format qui va bien.")
     bad_formats = []
     for video_format in video_formats:
-        size = video_format.get('filesize', -1)
         format_desc = video_format['format']
         format_id = video_format['format_id']
         with WarningContext(format_id):
@@ -125,7 +92,7 @@ def ask_format(url):
             if x_size is None:
                 bad_formats.append(format_desc)
                 continue
-            if min([x_size, y_size])>=720:
+            if min([x_size, y_size]) >= 720:
                 print("trouvé : ", format_id)
                 return format_id
             bad_formats.append(format_desc)
