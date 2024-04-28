@@ -8,6 +8,9 @@ from concurrent.futures import ThreadPoolExecutor
 
 import dirmanage
 from src.utilities_b import download
+from src.utilities import random_string
+from src.utilities import write_json_file
+from src.exceptions import UnkownFormat
 
 
 class Options:
@@ -15,6 +18,13 @@ class Options:
     def __init__(self):
         self.already_submited: list[str] = []
         self.list_file = dirmanage.init_dir / sys.argv[1]
+        filename = f"with_errors_{random_string(5)}.json"
+        self.error_file = dirmanage.init_dir / filename
+        self.with_error: list[str] = []
+
+    def save_errors(self):
+        """Save the file with error urls."""
+        write_json_file(self.with_error, self.error_file)
 
 
 def get_new_urls(options: Options):
@@ -26,6 +36,14 @@ def get_new_urls(options: Options):
             yield line
 
 
+def one_job(url: str):
+    """Download and manage the exception."""
+    try:
+        download(url)
+    except UnkownFormat:
+        options.with_error.append(url)
+
+
 options = Options()
 
 jobs = []
@@ -33,5 +51,5 @@ with ThreadPoolExecutor(max_workers=10) as executor:
     while True:
         for url in get_new_urls(options):
             options.already_submited.append(url)
-            job = executor.submit(download, url)
+            job = executor.submit(one_job, url)
         time.sleep(1)

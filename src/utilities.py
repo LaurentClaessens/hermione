@@ -2,10 +2,10 @@
 
 import sys
 import json
-import threading
 from pathlib import Path
 
 import random
+import string
 import hashlib
 import requests
 
@@ -49,6 +49,7 @@ class WarningContext:
 
     def __exit__(self, *exc):
         """Exit the context manager"""
+        _ = exc
         sys.stdout = self.old_stdout
 
 
@@ -77,27 +78,10 @@ def cache_or_download(url):
     return content
 
 
-class StdRedirect:
-    """Redirect stdout."""
-
-    def __init__(self):
-        """Initialize."""
-        self.old_stdout = sys.stdout
-        sys.stdout = self
-
-    def flush(self):
-        """Implement the flush."""
-        try:
-            threading.current_thread().flush()
-        except AttributeError:
-            self.old_stdout.flush()
-
-    def write(self, text):
-        """Catch the print commands."""
-        try:
-            threading.current_thread().rss_write(text)
-        except AttributeError:
-            self.old_stdout.write(text)
+def random_string(length):
+    """Return a random string of letters of the given length."""
+    rn_list = [random.choice(string.ascii_letters) for _ in range(1, length)]
+    return "".join(rn_list)
 
 
 def ciao():

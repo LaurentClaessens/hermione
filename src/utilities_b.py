@@ -1,9 +1,8 @@
-import sys
-
 import yt_dlp
 
 from src.utilities import dprint
 from src.utilities import WarningContext
+from src.exceptions import UnkownFormat
 _ = dprint
 
 youtube_dl = yt_dlp
@@ -54,7 +53,7 @@ def ask_format(url):
                 print(f"format {format_desc}")
                 print(f"filesize {size}")
 
-    k_formats = ["18", "231"]
+    k_formats = ["18", "231", "hls-1584-0"]
 
     for num in k_formats:
         if num in format_list:
@@ -62,7 +61,7 @@ def ask_format(url):
             return num
 
     print("I found no known formats.")
-    sys.exit(1)
+    raise UnkownFormat()
 
 
 def download(url):
