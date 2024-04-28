@@ -41,6 +41,14 @@ def ask_format(url):
 
     print("")
     format_list = []
+
+    k_formats = ["18", "231", "hls-1584-0", "hls-1616-1"]
+
+    for num in k_formats:
+        if num in format_list:
+            print(f"I choose the format {num}")
+            return num
+
     with WarningContext("Here are the available formats"):
         for video_format in infos["formats"]:
             if not is_okay(video_format):
@@ -52,13 +60,6 @@ def ask_format(url):
             with WarningContext(format_id):
                 print(f"format {format_desc}")
                 print(f"filesize {size}")
-
-    k_formats = ["18", "231", "hls-1584-0"]
-
-    for num in k_formats:
-        if num in format_list:
-            print(f"I choose the format {num}")
-            return num
 
     print("I found no known formats.")
     raise UnkownFormat()
