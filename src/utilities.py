@@ -3,6 +3,7 @@
 import sys
 import json
 from pathlib import Path
+from typing import Any
 
 import random
 import string
@@ -11,6 +12,21 @@ import requests
 
 
 dprint = print  # pylint:disable=invalid-name
+
+
+def json_to_str(json_dict, pretty=False, ensure_ascii=True):
+    """Return a string representation of the given json."""
+    if pretty:
+        return json.dumps(json_dict,
+                          indent=4,
+                          ensure_ascii=False)
+    return json.dumps(json_dict, ensure_ascii=ensure_ascii)
+
+
+def print_json(json_obj: Any):
+    """Print the given json."""
+    my_str = json_to_str(json_obj, pretty=True)
+    print(my_str)
 
 
 def write_json_file(json_dict, filename):

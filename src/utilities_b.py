@@ -1,9 +1,10 @@
 import yt_dlp
 
 from src.utilities import dprint
+from src.utilities import print_json
 from src.utilities import WarningContext
 from src.exceptions import UnkownFormat
-_ = dprint
+_ = dprint, print_json
 
 youtube_dl = yt_dlp
 
@@ -52,7 +53,15 @@ def ask_format(url):
     channel_id = infos.get("channel_id")
     if channel_id == "UCqA8H22FwgBVcF3GJpp0MQw":
         print("Monsieur phi. Je prend résolution max.")
-        return 22
+        for form in infos["formats"]:
+            if form["ext"] != "mp4":
+                continue
+            number = form["format"]
+            resolution = form["resolution"]
+            print(f"{number} -> {resolution}")
+        # 232, 136 n'ont pas le son
+        # avant c'était 22
+        return 18
 
     print("")
     num_list = []
@@ -64,7 +73,7 @@ def ask_format(url):
         format_id = video_format['format_id']
         num_list.append(format_id)
 
-    k_formats = ["18", "231"]
+    k_formats = ["18"]
     hls_formats = ["515", "671", "880", "2103", "1231", "1344",
                    "1357", "1388", "1393", "1399", "1530", "1500",
                    "1530", "1541", "1584", "1420", "1605",
@@ -73,18 +82,18 @@ def ask_format(url):
                    "2030", "2050", "2087", "2283", "2551", "2686", "3406"
                    "3470" "3952" "5263"
                    ]
-    for hls in hls_formats:
-        k_formats.append(f"hls-{hls}-0")
-        k_formats.append(f"hls-{hls}-1")
-
     for num in k_formats:
         if num in num_list:
             print(f"I choose the format {num}")
             return num
+    for hls in hls_formats:
+        k_formats.append(f"hls-{hls}-0")
+        k_formats.append(f"hls-{hls}-1")
 
     print("rechercher un format qui va bien.")
     bad_formats = []
     for video_format in video_formats:
+        print_json(video_format)
         format_desc = video_format['format']
         format_id = video_format['format_id']
         with WarningContext(format_id):
