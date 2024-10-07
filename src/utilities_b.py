@@ -2,8 +2,8 @@ import yt_dlp
 
 from src.utilities import dprint
 from src.utilities import print_json
-from src.utilities import WarningContext
-from src.exceptions import UnkownFormat
+from src.utilities import ciao
+from src.utilities import print_json
 _ = dprint, print_json
 
 youtube_dl = yt_dlp
@@ -19,7 +19,22 @@ def is_okay(video_format):
         return False
     if not video_format.get('asr', True):
         return False
-    return True
+
+    with_audio = video_format['audio_ext']
+    print(f"with : {with_audio}")
+    if with_audio == "none":
+        return False
+    format_desc = video_format['format']
+    format_id = video_format['format_id']
+    x_size, y_size = get_sizes(format_desc)
+    if x_size is None:
+        return False
+
+    if min([x_size, y_size]) >= 720:
+        print("trouvé : ", format_id)
+        return True
+
+    return False
 
 
 def get_sizes(desc: str) -> tuple[int, int]:
@@ -69,45 +84,24 @@ def ask_format(url):
     for video_format in infos["formats"]:
         if not is_okay(video_format):
             continue
+        print("ce format semble ok")
+        print_json(video_format)
         video_formats.append(video_format)
         format_id = video_format['format_id']
         num_list.append(format_id)
 
-    k_formats = ["18"]
-    hls_formats = []
-    for num in k_formats:
-        if num in num_list:
-            print(f"I choose the format {num}")
-            return num
-    for hls in hls_formats:
-        k_formats.append(f"hls-{hls}-0")
-        k_formats.append(f"hls-{hls}-1")
-
-    print("rechercher un format qui va bien.")
-    bad_formats = []
-    for video_format in video_formats:
-        print(f"avec audio: {video_format['audio_ext']}")
-        format_desc = video_format['format']
-        format_id = video_format['format_id']
-        with WarningContext(format_id):
-            x_size, y_size = get_sizes(format_desc)
-            if x_size is None:
-                bad_formats.append(format_desc)
-                continue
-            if min([x_size, y_size]) >= 720:
-                print("trouvé : ", format_id)
-                return format_id
-            bad_formats.append(format_desc)
+    dprint(f"liste des numéros : {num_list}")
+    ciao()
+    # il faut retourner le 18 si possible
 
     print("")
     print("")
     print("")
     print("Suitable format not found")
-    print(bad_formats)
     print("")
     print("")
     print("")
-    raise UnkownFormat()
+    ciao()
 
 
 def download(url):
