@@ -74,14 +74,7 @@ def ask_format(url):
         num_list.append(format_id)
 
     k_formats = ["18"]
-    hls_formats = ["515", "671", "880", "2103", "1231", "1344",
-                   "1357", "1388", "1393", "1399", "1530", "1500",
-                   "1530", "1541", "1584", "1420", "1605",
-                   "1616", "1648", "1723", "1744", "1773", "1821",
-                   "1829", "1871", "1932",
-                   "2030", "2050", "2087", "2283", "2551", "2686", "3406"
-                   "3470" "3952" "5263"
-                   ]
+    hls_formats = []
     for num in k_formats:
         if num in num_list:
             print(f"I choose the format {num}")
@@ -93,7 +86,7 @@ def ask_format(url):
     print("rechercher un format qui va bien.")
     bad_formats = []
     for video_format in video_formats:
-        print_json(video_format)
+        print(f"avec audio: {video_format['audio_ext']}")
         format_desc = video_format['format']
         format_id = video_format['format_id']
         with WarningContext(format_id):
