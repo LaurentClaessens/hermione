@@ -1,10 +1,10 @@
 import yt_dlp
 
+from src.exceptions import NoFormatFound
 from src.utilities import dprint
 from src.utilities import print_json
 from src.utilities import ciao
-from src.utilities import print_json
-_ = dprint, print_json
+_ = dprint, print_json, ciao
 
 youtube_dl = yt_dlp
 
@@ -21,7 +21,6 @@ def is_okay(video_format):
         return False
 
     with_audio = video_format['audio_ext']
-    print(f"with : {with_audio}")
     if with_audio == "none":
         return False
     format_desc = video_format['format']
@@ -91,22 +90,20 @@ def ask_format(url):
         num_list.append(format_id)
 
     dprint(f"liste des numéros : {num_list}")
-    ciao()
-    # il faut retourner le 18 si possible
-
-    print("")
-    print("")
-    print("")
-    print("Suitable format not found")
-    print("")
-    print("")
-    print("")
-    ciao()
+    if not num_list:
+        raise NoFormatFound()
+    if 18 in num_list:
+        return 18
+    return num_list[0]
 
 
 def download(url):
     """Download the video."""
-    video_format = ask_format(url)
+    try:
+        video_format = ask_format(url)
+    except NoFormatFound:
+        print("No good format found.")
+        return
     format_number = str(video_format)
     ydl_opts = {
         'format': format_number,

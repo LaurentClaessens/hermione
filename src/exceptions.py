@@ -7,3 +7,7 @@ class HermioneError(Exception):
 
 class UnkownFormat(HermioneError):
     """The object is not build yet."""
+
+
+class NoFormatFound(HermioneError):
+    """No good format is found."""
