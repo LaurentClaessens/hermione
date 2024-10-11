@@ -80,6 +80,9 @@ def ask_format(url):
     print("")
     num_list = []
     video_formats = []
+
+    print_json(infos["formats"])
+
     for video_format in infos["formats"]:
         if not is_okay(video_format):
             continue
@@ -99,14 +102,7 @@ def ask_format(url):
 
 def download(url):
     """Download the video."""
-    try:
-        video_format = ask_format(url)
-    except NoFormatFound:
-        print("No good format found.")
-        return
-    format_number = str(video_format)
     ydl_opts = {
-        'format': format_number,
         'noplaylist': True}
 
     print("")

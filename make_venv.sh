@@ -37,7 +37,7 @@ install_venv()
 
 install_pip_packages()
 {
-    pip3_install youtube-dl
+    pip3_install yt-dlp
     pip3_install requests
     pip3_install lxml
     pip3_install pylint
