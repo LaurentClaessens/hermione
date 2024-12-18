@@ -68,6 +68,8 @@ def one_job(url: str):
     except UnkownFormat:
         options.with_error.append(url)
         options.save_errors()
+    finally:
+        options.finished.append(url)
 
 
 options = Options()
