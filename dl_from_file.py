@@ -79,4 +79,6 @@ with ThreadPoolExecutor(max_workers=5) as executor:
             options.already_submited.append(url)
             job = executor.submit(one_job, url)
         time.sleep(1)
-        print(f"Done: {options.finished}/{options.already_submited}")
+        l_finished = len(options.finished)
+        l_submited = len(options.already_submited)
+        print(f"Done: {l_finished}/{l_submited}")
