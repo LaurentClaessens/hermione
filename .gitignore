@@ -2,6 +2,7 @@
 *.swo
 *~
 *.mp4
+*.webm
 *.mp4.part
 .kk.log
 *.mp3
@@ -20,3 +21,5 @@ pyvenv.cfg
 lib64
 lib/
 lib64/
+*.jpg
+musique/
