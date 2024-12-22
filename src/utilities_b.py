@@ -103,7 +103,12 @@ def ask_format(url):
 def download(url):
     """Download the video."""
     ydl_opts = {
-        'noplaylist': True}
+        'noplaylist': True,
+        'language': 'fr'}
+
+    ydl_opts = {
+        'noplaylist': True,
+    }
 
     print("")
     with youtube_dl.YoutubeDL(ydl_opts) as ydl:

@@ -8,7 +8,7 @@
 
 set -u
 
-VERSION=3.10.6
+VERSION=3.13.1
 PYTHON3=~/.pyenv/versions/$VERSION/bin/python3
 MAIN_DIR=$PWD
 VENV_DIR=$MAIN_DIR/venv
