@@ -10,7 +10,7 @@ Download a video from youtube.
 import sys
 import yt_dlp
 
-from src.utilities_b import download
+from src.download import download
 
 youtube_dl = yt_dlp
 

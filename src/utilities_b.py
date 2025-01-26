@@ -1,7 +1,8 @@
+from typing import TYPE_CHECKING
+
 import yt_dlp
 
 
-import dirmanage
 from src.exceptions import NoFormatFound
 from src.credentials import get_key
 from src.utilities import dprint
@@ -11,32 +12,8 @@ _ = dprint, print_json, ciao
 
 youtube_dl = yt_dlp
 
-
-def is_okay(video_format):
-    """
-    Say if a video format is okay.
-
-    It has to contain the video and the sound.
-    """
-    if "only" in video_format["format"]:
-        return False
-    if not video_format.get('asr', True):
-        return False
-
-    with_audio = video_format['audio_ext']
-    if with_audio == "none":
-        return False
-    format_desc = video_format['format']
-    format_id = video_format['format_id']
-    x_size, y_size = get_sizes(format_desc)
-    if x_size is None:
-        return False
-
-    if min([x_size, y_size]) >= 720:
-        print("trouvé : ", format_id)
-        return True
-
-    return False
+if TYPE_CHECKING:
+    from src.yt_video import YtVideo
 
 
 def get_sizes(desc: str) -> tuple[int, int]:
@@ -63,74 +40,34 @@ def ytdlp_options():
     }
 
 
-def show_formats(infos):
-    """Show the availabe formats."""
-    for video_format in infos["formats"]:
-        print_json(video_format)
-
-
-def get_infos(url) -> dict:
-    """Return the informations about the video."""
-    ydl_opts = ytdlp_options()
-    with youtube_dl.YoutubeDL(ydl_opts) as ydl:
-        infos = ydl.extract_info(url, download=False)
-    if infos is None:
-        raise TypeError("Connot download the infos")
-    return infos
-
-
-def select_vid_format(url) -> str:
+def select_vid_format(video: 'YtVideo') -> str:
     """Select the video format I want."""
-    infos = get_infos(url)
+    infos = video.infos
     channel_id = infos.get("channel_id")
     if channel_id == "UCqA8H22FwgBVcF3GJpp0MQw":
         print("Monsieur phi. Je prend résolution max.")
         ciao("voir ce qu'on peut faire avec ça.")
 
-    my_formats = ["248", "137", "271", "313"]
+    my_formats = ["248", "137", "271", "313", "298", "303", "299"]
     available_formats = [form['format_id'] for form in infos['formats']]
     for format_id in my_formats:
         if format_id in available_formats:
             return format_id
     print(available_formats)
-    show_formats(infos)
-    ciao("Tu dois séléctionner là-dedans")
+    video.show_formats()
+    ciao("Tu dois séléctionner un format vidéo là-dedans")
     raise NoFormatFound('Pas de bon format vidéo trouvé')
 
 
-def select_audio_format(url):
+def select_audio_format(video: 'YtVideo'):
     """Return the audio format I want."""
-    infos = get_infos(url)
+    infos = video.infos
     my_formats = ["140", "251", "250", "251-4", "140-5"]
     available_formats = [form['format_id'] for form in infos['formats']]
     for format_id in my_formats:
         if format_id in available_formats:
             return format_id
     print(available_formats)
-    show_formats(infos)
+    video.show_formats()
     ciao("Tu dois séléctionner un format audio là-dedans")
     raise NoFormatFound('Pas de bon format audio trouvé')
-
-
-def download(url):
-    """Download the video."""
-    outfile = dirmanage.base_dir / "downloaded"
-    _ = outfile
-
-    audio_format = select_audio_format(url)
-    vid_format = select_vid_format(url)
-    format_id = f"{vid_format}+{audio_format}"
-    print("format sélectionné")
-    print(format_id)
-
-    ydl_opts = ytdlp_options()
-    ydl_opts["format"] = format_id
-
-    print("")
-    with youtube_dl.YoutubeDL(ydl_opts) as ydl:
-
-        print(ydl.get_output_path())
-        ydl.download([url])
-        pass
-
-    print("Done.")

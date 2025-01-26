@@ -8,7 +8,7 @@ import contextlib
 from concurrent.futures import ThreadPoolExecutor
 
 import dirmanage
-from src.utilities_b import download
+from src.download import download
 from src.utilities import random_string
 from src.utilities import write_json_file
 from src.exceptions import UnkownFormat
