@@ -6,50 +6,61 @@
 # git clone https://github.com/pyenv/pyenv.git ~/.pyenv
 # ~/.pyenv/bin/pyenv install -v 3.10.6
 
+
+#!/bin/bash
+
 set -u
 
 VERSION=3.13.1
-PYTHON3=~/.pyenv/versions/$VERSION/bin/python3
-MAIN_DIR=$PWD
-VENV_DIR=$MAIN_DIR/venv
-BIN_DIR=$VENV_DIR/bin
+MAIN_DIR=$(pwd)
+VENV_DIR="$MAIN_DIR/venv"
+BIN_DIR="$VENV_DIR/bin"
+pyenv_dst=~/.pyenv
+PYTHON3="$pyenv_dst/versions/$VERSION/bin/python3"
 
 
-pip3_install()
+
+function install_pyenv()
 {
-    PACKAGE=$1
-    cd $BIN_DIR
-    ./pip3 install $PACKAGE
+	if [ -e "$PYTHON3" ]; then
+  	echo "The pyenv binary $PYTHON3 exists."
+		return
+  fi
+
+	echo "I will install pyenv in $pyenv_dst".
+	read -p "Is it ok ? " -n 1 -r
+	echo
+	if [[ $REPLY =~ ^[Yy]$ ]]
+	then
+		git clone https://github.com/pyenv/pyenv.git $pyenv_dst
+		cd $pyenv_dst
+		git pull
+		yes n | $pyenv_dst/bin/pyenv install -v $VERSION
+	else
+		echo "Change the variable `pyenv_dst` in `make_pyenv.sh`"
+		echo "and launch again."
+		exit 1
+	fi
+
 }
 
-upgrade_pip()
+function create_venv()
 {
-    cd $BIN_DIR
-    ./pip3 install --upgrade pip
+	echo "Creating the virtual environment"
+	"$PYTHON3" -m venv "$VENV_DIR"
+
+	cd "$BIN_DIR" || exit 1
+	./python3 -m pip install --upgrade pip
 }
 
-install_venv()
+function pip_install()
 {
-    echo $PYTHON3
-    echo $VENV_DIR
-    $PYTHON3 -m venv $VENV_DIR
+	cd "$BIN_DIR" || exit 1
+	./pip3 install -r "$MAIN_DIR/requirements.txt"
+	# ./pip3 freeze
 }
 
-install_pip_packages()
-{
-    pip3_install yt-dlp
-    pip3_install requests
-    pip3_install lxml
-    pip3_install pylint
-    pip3_install pydocstyle
-    pip3_install pycodestyle
-}
 
-install_venv
-upgrade_pip
-install_pip_packages
-
-cd $BIN_DIR
-./pip3 install --force-reinstall https://github.com/yt-dlp/yt-dlp/archive/master.tar.gz
-echo "Le force-reinstall n'est peut-être plus obligatoire."
-
+install_pyenv
+create_venv
+pip_install
