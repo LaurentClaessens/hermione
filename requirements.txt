@@ -1,0 +1,5 @@
+yt-dlp
+requests
+lxml
+selenium
+colorama

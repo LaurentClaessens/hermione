@@ -3,6 +3,10 @@
 *~
 *.mp4
 *.webm
+*.mkv
+*.webm
+ratés.txt
+notes.md
 *.mp4.part
 .kk.log
 *.mp3
