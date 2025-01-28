@@ -18,7 +18,7 @@ def download(url):
     print("format sélectionné")
     print(format_id)
 
-    ydl_opts = ytdlp_options()
+    ydl_opts = ytdlp_options(video)
     ydl_opts["format"] = format_id
 
     print("")

@@ -13,7 +13,7 @@ class YtVideo:
 
     def get_infos(self) -> dict:
         """Return the informations about the video."""
-        ydl_opts = ytdlp_options()
+        ydl_opts = ytdlp_options(self)
         with youtube_dl.YoutubeDL(ydl_opts) as ydl:
             infos = ydl.extract_info(self.url, download=False)
         if infos is None:
@@ -22,7 +22,7 @@ class YtVideo:
 
     def show_formats(self):
         """Show the availabe formats."""
-        options = ytdlp_options()
+        options = ytdlp_options(self)
         more_options = {
             'outtmpl': '%(id)s',
             'listformats': True,

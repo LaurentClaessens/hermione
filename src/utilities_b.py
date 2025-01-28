@@ -1,4 +1,5 @@
 from typing import TYPE_CHECKING
+from typing import Any
 
 import yt_dlp
 
@@ -31,13 +32,25 @@ def get_sizes(desc: str) -> tuple[int, int]:
     return 0, 0
 
 
-def ytdlp_options():
+def is_youtube(video: 'YtVideo'):
+    """Say if this is a youtube video."""
+    url = video.url
+    if "youtube.com" in url:
+        return True
+    if "youtu.be" in url:
+        return True
+    return False
+
+
+def ytdlp_options(video: 'YtVideo'):
     """Return the basic options."""
     ff_profile_path = get_key("ff_profile_path")
-    return {
+    options: dict[str, Any] = {
         'noplaylist': True,
-        'cookiesfrombrowser': ('firefox', ff_profile_path),
     }
+    if is_youtube(video):
+        options['cookiesfrombrowser'] = ('firefox', ff_profile_path)
+    return options
 
 
 def select_vid_format(video: 'YtVideo') -> str:
@@ -48,7 +61,8 @@ def select_vid_format(video: 'YtVideo') -> str:
         print("Monsieur phi. Je prend résolution max.")
         ciao("voir ce qu'on peut faire avec ça.")
 
-    my_formats = ["248", "137", "271", "313", "298", "303", "299"]
+    my_formats = ["248", "137", "271", "313", "298", "303", "299",
+                  "788", "398", "247"]
     available_formats = [form['format_id'] for form in infos['formats']]
     for format_id in my_formats:
         if format_id in available_formats:
