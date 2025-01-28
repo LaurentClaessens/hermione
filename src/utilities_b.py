@@ -17,21 +17,6 @@ if TYPE_CHECKING:
     from src.yt_video import YtVideo
 
 
-def get_sizes(desc: str) -> tuple[int, int]:
-    """
-    Return the x,y sizes of the format description.
-    """
-    parts = desc.split(" ")
-    for part in parts:
-        if "x" not in part:
-            continue
-        nums = part.split("x")
-        x_size = int(nums[0])
-        y_size = int(nums[1])
-        return x_size, y_size
-    return 0, 0
-
-
 def is_youtube(video: 'YtVideo'):
     """Say if this is a youtube video."""
     url = video.url
