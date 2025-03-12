@@ -8,6 +8,7 @@ from src.exceptions import NoFormatFound
 from src.credentials import get_key
 from src.utilities import dprint
 from src.utilities import print_json
+from src.utilities import always_true
 from src.utilities import ciao
 _ = dprint, print_json, ciao
 
@@ -34,7 +35,8 @@ def ytdlp_options(video: 'YtVideo'):
         'noplaylist': True,
     }
     if is_youtube(video):
-        options['cookiesfrombrowser'] = ('firefox', ff_profile_path)
+        if not always_true():
+            options['cookiesfrombrowser'] = ('firefox', ff_profile_path)
     return options
 
 
@@ -44,10 +46,12 @@ def select_vid_format(video: 'YtVideo') -> str:
     channel_id = infos.get("channel_id")
     if channel_id == "UCqA8H22FwgBVcF3GJpp0MQw":
         print("Monsieur phi. Je prend résolution max.")
-        ciao("voir ce qu'on peut faire avec ça.")
+        video.show_formats()
+        return "271"
 
     my_formats = ["248", "137", "271", "313", "298", "303", "299",
-                  "788", "398", "247"]
+                  "788", "398", "247", "243", "136",
+                  "135"]
     available_formats = [form['format_id'] for form in infos['formats']]
     for format_id in my_formats:
         if format_id in available_formats:
@@ -61,7 +65,8 @@ def select_vid_format(video: 'YtVideo') -> str:
 def select_audio_format(video: 'YtVideo'):
     """Return the audio format I want."""
     infos = video.infos
-    my_formats = ["140", "251", "250", "251-4", "140-5"]
+    my_formats = ["140", "251", "250", "251-4",
+                  "140-5", "140-1", "140-0", "251-0", "250-1"]
     available_formats = [form['format_id'] for form in infos['formats']]
     for format_id in my_formats:
         if format_id in available_formats:
