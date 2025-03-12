@@ -8,6 +8,8 @@
 ratés.txt
 notes.md
 *.mp4.part
+*.webm.part
+*.mkv.part
 .kk.log
 *.mp3
 urls*.txt
