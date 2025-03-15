@@ -10,7 +10,7 @@ from src.utilities import dprint
 from src.utilities import print_json
 from src.utilities import always_true
 from src.utilities import ciao
-_ = dprint, print_json, ciao
+_: Any = dprint, print_json, ciao, always_true
 
 youtube_dl = yt_dlp
 
@@ -35,8 +35,7 @@ def ytdlp_options(video: 'YtVideo'):
         'noplaylist': True,
     }
     if is_youtube(video):
-        if not always_true():
-            options['cookiesfrombrowser'] = ('firefox', ff_profile_path)
+        options['cookiesfrombrowser'] = ('firefox', ff_profile_path)
     return options
 
 
