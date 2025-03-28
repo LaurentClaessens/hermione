@@ -50,13 +50,14 @@ def select_vid_format(video: 'YtVideo') -> str:
 
     my_formats = ["248", "137", "271", "313", "298", "303", "299",
                   "788", "398", "247", "243", "136",
-                  "135"]
+                  "135", "234"]
     available_formats = [form['format_id'] for form in infos['formats']]
     for format_id in my_formats:
         if format_id in available_formats:
             return format_id
-    print(available_formats)
     video.show_formats()
+    print("")
+    print(available_formats)
     ciao("Tu dois séléctionner un format vidéo là-dedans")
     raise NoFormatFound('Pas de bon format vidéo trouvé')
 
@@ -65,12 +66,14 @@ def select_audio_format(video: 'YtVideo'):
     """Return the audio format I want."""
     infos = video.infos
     my_formats = ["140", "251", "250", "251-4",
-                  "140-5", "140-1", "140-0", "251-0", "250-1"]
+                  "140-5", "140-1", "140-0", "251-0", "250-1", "617",
+                  "234"]
     available_formats = [form['format_id'] for form in infos['formats']]
     for format_id in my_formats:
         if format_id in available_formats:
             return format_id
-    print(available_formats)
     video.show_formats()
+    print("")
+    print(available_formats)
     ciao("Tu dois séléctionner un format audio là-dedans")
     raise NoFormatFound('Pas de bon format audio trouvé')
