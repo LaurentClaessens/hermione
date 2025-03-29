@@ -4,6 +4,10 @@ import yt_dlp
 
 import dirmanage
 from src.utilities_b import ytdlp_options
+from src.utilities_b import sanitize_filename
+from src.utilities import ciao
+from src.utilities import dprint
+_ = ciao, dprint
 
 youtube_dl = yt_dlp
 
@@ -18,11 +22,13 @@ class YtVideo:
     def get_outfile(self) -> Path:
         """Return the file in which we have to output."""
         title = self.infos["title"]
-        extension = self.infos['ext']
+        ext = self.infos['ext']
         vid_id = self.infos['id']
+        timestamp = self.infos['timestamp']
         channel = self.infos["channel"]
         base_dir = dirmanage.base_dir
-        filename = f"video_{channel}_{vid_id}_{title}.{extension}"
+        filename = f"video_{channel}_{timestamp}_{vid_id}_{title}.{ext}"
+        filename = sanitize_filename(filename)
         return (base_dir / filename).resolve()
 
     def get_infos(self) -> dict:

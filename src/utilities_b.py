@@ -18,6 +18,13 @@ if TYPE_CHECKING:
     from src.yt_video import YtVideo
 
 
+def sanitize_filename(filename: str) -> str:
+    """Remove some problematic characters in the filename"""
+    filename = filename.replace(" ", "_")
+    filename = filename.replace("/", "_")
+    return filename
+
+
 def is_youtube(video: 'YtVideo'):
     """Say if this is a youtube video."""
     url = video.url

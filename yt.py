@@ -1,11 +1,7 @@
 #!venv/bin/python3
 
 
-"""
-Download a video from youtube.
-
-./yt url -22 to get max definition
-"""
+"""Download a video from youtube."""
 
 import sys
 import yt_dlp
