@@ -57,7 +57,7 @@ def select_vid_format(video: 'YtVideo') -> str:
 
     my_formats = ["248", "137", "271", "313", "298", "303", "299",
                   "788", "398", "247", "243", "136",
-                  "135", "234"]
+                  "135", "234", "614"]
     available_formats = [form['format_id'] for form in infos['formats']]
     for format_id in my_formats:
         if format_id in available_formats:
@@ -69,18 +69,34 @@ def select_vid_format(video: 'YtVideo') -> str:
     raise NoFormatFound('Pas de bon format vidéo trouvé')
 
 
+def is_ok_audio_format(note: str):
+    """Say if this is the default autio format."""
+    if "original" not in note:
+        return False
+    return True
+
+
 def select_audio_format(video: 'YtVideo'):
     """Return the audio format I want."""
     infos = video.infos
-    my_formats = ["140", "251", "250", "251-4",
-                  "140-5", "140-1", "140-0", "251-0", "250-1", "617",
-                  "234"]
-    available_formats = [form['format_id'] for form in infos['formats']]
-    for format_id in my_formats:
-        if format_id in available_formats:
-            return format_id
-    video.show_formats()
-    print("")
-    print(available_formats)
+
+    ok_formats: dict[str, str] = {}
+    all_audio: dict[str, str] = {}
+    for format_info in infos['formats']:
+        ident = format_info.get('format_id', 'id???')
+        note = format_info.get('format_note', 'note???')
+        all_audio[ident] = note
+        if is_ok_audio_format(note):
+            ok_formats[ident] = note
+
+    for ident, note in ok_formats.items():
+        if "high" in note:
+            print(f"[Audio selection] {ident}: {note}")
+            return ident
+
+    print("Available audio formats:")
+    for ident, note in all_audio.items():
+        print(f" {ident}: {note}")
+
     ciao("Tu dois séléctionner un format audio là-dedans")
     raise NoFormatFound('Pas de bon format audio trouvé')
