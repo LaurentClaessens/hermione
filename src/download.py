@@ -20,7 +20,7 @@ def download(url):
     """Download the video."""
     video = YtVideo(url)
 
-    write_json_file(video.infos, "infos.json")
+    write_json_file(video.infos, "infos.json", pretty=True)
     outfile = video.outfile
 
     audio_format = select_audio_format(video)

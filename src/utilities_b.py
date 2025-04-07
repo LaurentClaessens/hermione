@@ -46,6 +46,45 @@ def ytdlp_options(video: 'YtVideo'):
     return options
 
 
+def is_video_format(j_format: dict[str, Any]):
+    """Say if a given format is video."""
+    resolution = j_format["resolution"]
+    if resolution == "audio only":
+        return False
+    return True
+
+
+def get_pixel_size(j_format: dict[str, Any]) -> int:
+    """Say the size in pixel square of a format."""
+    resolution = j_format['resolution']
+    parts = resolution.split("x")
+    str_xres = parts[0]
+    str_yres = parts[1]
+    xres = int(str_xres)
+    yres = int(str_yres)
+    return xres * yres
+
+
+def show_format(form: dict[str, Any]):
+    """Print a format for me."""
+    resolution = form['resolution']
+    ext = form['video_ext']
+    note = form.get('format_note', None)
+    ident = form['format_id']
+    print(f"{ident} -> {resolution}, {note}, {ext}")
+
+
+def get_second_best(formats: list[dict[str, Any]]):
+    """Return the second best video format."""
+    best = formats[0]
+    second_best = formats[0]
+    for form in formats:
+        if get_pixel_size(form) > get_pixel_size(best):
+            second_best = best
+            best = form
+    return second_best
+
+
 def select_vid_format(video: 'YtVideo') -> str:
     """Select the video format I want."""
     infos = video.infos
@@ -55,25 +94,30 @@ def select_vid_format(video: 'YtVideo') -> str:
         video.show_formats()
         return "271"
 
-    my_formats = ["248", "137", "271", "313", "298", "303", "299",
-                  "788", "398", "247", "243", "136",
-                  "135", "234", "614"]
-    available_formats = [form['format_id'] for form in infos['formats']]
-    for format_id in my_formats:
-        if format_id in available_formats:
-            return format_id
-    video.show_formats()
-    print("")
-    print(available_formats)
-    ciao("Tu dois séléctionner un format vidéo là-dedans")
-    raise NoFormatFound('Pas de bon format vidéo trouvé')
+    formats: list[dict[str, Any]] = []
+    for j_format in infos['formats']:
+        if is_video_format(j_format):
+            formats.append(j_format)
+
+    formats.sort(key=lambda x: get_pixel_size(x))
+
+    for j_format in formats:
+        show_format(j_format)
+
+    select = get_second_best(formats)
+    print("sélectionné:")
+    show_format(select)
+
+    return select['format_id']
 
 
 def is_ok_audio_format(note: str):
     """Say if this is the default autio format."""
-    if "original" not in note:
-        return False
-    return True
+    if "original" in note:
+        return True
+    if "Default" in note:
+        return True
+    return False
 
 
 def select_audio_format(video: 'YtVideo'):
@@ -89,10 +133,12 @@ def select_audio_format(video: 'YtVideo'):
         if is_ok_audio_format(note):
             ok_formats[ident] = note
 
-    for ident, note in ok_formats.items():
-        if "high" in note:
-            print(f"[Audio selection] {ident}: {note}")
-            return ident
+    words = ["high", "default"]
+    for word in words:
+        for ident, note in ok_formats.items():
+            if word in note:
+                print(f"[Audio selection] {ident}: {note}")
+                return ident
 
     print("Available audio formats:")
     for ident, note in all_audio.items():
