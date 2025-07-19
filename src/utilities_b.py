@@ -1,5 +1,5 @@
-from typing import TYPE_CHECKING
 from typing import Any
+from typing import TYPE_CHECKING
 
 import yt_dlp
 
@@ -13,7 +13,6 @@ from src.utilities import ciao
 _: Any = dprint, print_json, ciao, always_true
 
 youtube_dl = yt_dlp
-
 if TYPE_CHECKING:
     from src.yt_video import YtVideo
 

@@ -10,6 +10,10 @@ notes.md
 *.mp4.part
 *.webm.part
 *.mkv.part
+*.ytdl
+*.part
+*.mp4
+vids_*.txt
 .kk.log
 *.mp3
 urls*.txt

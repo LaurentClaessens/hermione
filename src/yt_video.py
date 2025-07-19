@@ -27,14 +27,14 @@ class YtVideo:
         timestamp = self.infos['timestamp']
         channel = self.infos["channel"]
         base_dir = dirmanage.base_dir
-        filename = f"video_{channel}_{timestamp}_{vid_id}_{title}.{ext}"
+        filename = f"wideo_{channel}_{timestamp}_{vid_id}_{title}.{ext}"
         filename = sanitize_filename(filename)
         return (base_dir / filename).resolve()
 
     def get_infos(self) -> dict:
         """Return the informations about the video."""
         ydl_opts = ytdlp_options(self)
-        ydl_opts.pop("cookiesfrombrowser")
+        ydl_opts.pop("cookiesfrombrowser", None)
         with youtube_dl.YoutubeDL(ydl_opts) as ydl:
             infos = ydl.extract_info(self.url, download=False)
         if infos is None:

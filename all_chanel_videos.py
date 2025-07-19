@@ -1,18 +1,18 @@
-#!/usr/bin/python3
+#!venv/bin/python3
 
 
 """
-Get the url of all videos from a yt channel.
-- go to the list of videos
-- open the inspector
-- copy-paste the code in 'channel.html'
-
-This script will give the list of all the urls.
-
-This script is far from being finished.
+Mettre l'url d'une des vidéos de la chaine ici en-bas.
+Lancer ce script. Il crée un fichier `vids_UC7_gcs09iThXybpVgjHZ_7g.txt`.
+Utiliser le `dl_from_file.py`.
 """
 
+import json
 from pathlib import Path
+from src.utilities_c import get_channel_id
+from src.utilities import write_json_file
+from src.utilities import dprint
+_ = write_json_file, dprint
 
 
 HREF_TEXT = 'href="/watch?v='
@@ -28,7 +28,7 @@ def is_ok_line(line: str):
     return True
 
 
-def do_work():
+def do_old_work():
     text = Path("channel.html").read_text()
     lines = text.split("\n")
     ok_lines = [line for line in lines if is_ok_line(line)]
@@ -56,4 +56,69 @@ def do_work():
         print(url)
 
 
-do_work()
+def read_dumped(dump_txt: str) -> list:
+    """
+    Read the dumped file.
+
+    The difficulty is that the dumped file is a concatenation of json files.
+    """
+    objects = []
+    decoder = json.JSONDecoder()
+    text = dump_txt.lstrip()  # decode hates leading whitespace
+    while text:
+        obj, index = decoder.raw_decode(text)
+        text = text[index:].lstrip()
+        objects.append(obj)
+        print(obj)
+    return objects
+
+
+def get_all_urls(dump) -> list[str]:
+    """Recursivelly parse the given json and return the urls."""
+    answer: list[str] = []
+    if isinstance(dump, dict):
+        for value in dump.values():
+            answer.extend(get_all_urls(value))
+        if 'url' in dump:
+            url = dump['url']
+            answer.append(url)
+    if isinstance(dump, list):
+        for elem in dump:
+            answer.extend(get_all_urls(elem))
+    return answer
+
+
+def is_video_url(url: str) -> bool:
+    """Say if an url if a video."""
+    prefix = "https://www.youtube.com/watch"
+    if url.startswith(prefix):
+        return True
+    return False
+
+
+def do_work(vid_url: str):
+    """Get the url list of a channel."""
+    channel_id = get_channel_id(vid_url)
+    channel_url = f'https://www.youtube.com/channel/{channel_id}'
+    ydl_opts = {
+        'quiet': True,
+        'extract_flat': True,  # Don't download, just get URLs
+    }
+    import yt_dlp
+
+    with yt_dlp.YoutubeDL(ydl_opts) as ydl:
+        dump = ydl.extract_info(channel_url, download=False)
+    assert dump is not None
+    urls = get_all_urls(dump)
+    vid_urls = [url for url in urls if is_video_url(url)]
+
+    txt_list = ""
+    for url in vid_urls:
+        txt_list += url + "\n"
+
+    out_path = Path(f"vids_{channel_id}.txt")
+    out_path.write_text(txt_list)
+
+
+vid_url = 'https://www.youtube.com/watch?v=7wZPaovDH50'
+do_work(vid_url)

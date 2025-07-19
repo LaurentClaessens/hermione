@@ -1,6 +1,11 @@
 #!venv/bin/python3
 
-"""Download the files from the content of a text file."""
+"""
+Download the files from the content of a text file.
+
+Astuce dans nvim:
+    autocmd TextChanged,TextChangedI <buffer> silent write
+"""
 
 import sys
 import time
@@ -75,7 +80,7 @@ def one_job(url: str):
 options = Options()
 
 jobs = []
-with ThreadPoolExecutor(max_workers=5) as executor:
+with ThreadPoolExecutor(max_workers=15) as executor:
     while True:
         for url in get_new_urls(options):
             options.already_submited.append(url)

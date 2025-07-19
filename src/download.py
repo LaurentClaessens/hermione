@@ -23,8 +23,13 @@ def download(url):
     write_json_file(video.infos, "infos.json", pretty=True)
     outfile = video.outfile
 
+    print("[select audio format]")
     audio_format = select_audio_format(video)
+    print(f"audio selected: {audio_format}")
+    print("[select video format]")
     vid_format = select_vid_format(video)
+    print(f"video selected: {vid_format}")
+
     format_id = f"{vid_format}+{audio_format}"
     print(f"format sélectionné: {format_id}")
 
@@ -46,6 +51,8 @@ def download(url):
             print(cmd_list)
 
             subprocess.run(cmd_list)
-        # ydl.download([url])
 
+    print("")
     print("Done.")
+    print("")
+    print(outfile.name)
