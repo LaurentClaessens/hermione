@@ -27,6 +27,7 @@ import configparser
 from src.stubs import PathOrStr
 
 
+
 class LPriniting:
     """Print every 2 seconds instead of immediately."""
 

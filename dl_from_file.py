@@ -9,8 +9,8 @@ Astuce dans nvim:
 
 import sys
 import time
+import random
 import contextlib
-from concurrent.futures import ThreadPoolExecutor
 
 import dirmanage
 from src.download import download
@@ -53,6 +53,7 @@ def get_new_urls(options: Options):
     """yield a list of new urls."""
     text = read_list_file(options)
     lines = text.splitlines()
+    urls: list[str] = []
     for line in lines:
         if line not in options.already_submited:
             print("")
@@ -63,7 +64,10 @@ def get_new_urls(options: Options):
             print("")
             print("")
             print("")
-            yield line
+            urls.append(line)
+    # random.shuffle(urls)
+    _ = random
+    return urls
 
 
 def one_job(url: str):
@@ -80,12 +84,13 @@ def one_job(url: str):
 options = Options()
 
 jobs = []
-with ThreadPoolExecutor(max_workers=15) as executor:
-    while True:
-        for url in get_new_urls(options):
-            options.already_submited.append(url)
-            job = executor.submit(one_job, url)
-        time.sleep(1)
+while True:
+    for url in get_new_urls(options):
+        options.already_submited.append(url)
+        one_job(url)
+        delay = 30
+        print(f"Attendre {delay}s pour ne pas faire peur à Google.")
+        time.sleep(delay)  # delay to avoid banishment from yt.
         l_finished = len(options.finished)
         l_submited = len(options.already_submited)
         print(f"Done: {l_finished}/{l_submited}")

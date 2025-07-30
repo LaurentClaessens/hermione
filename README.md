@@ -25,3 +25,16 @@ Pour avoir la liste de toutes les vidéos d'une chaine:
 ```
 youtube-dl --get-filename -o "%(id)s" "https://www.youtube.com/channel/UCYNbYGl89UUowy8oXkipC-Q"
 ```
+
+
+## cookies
+
+- créer un compte google pour l'occasion
+- lancer youtube.com dans un profil FF dédié.
+- Créer le fichier `~/.credentials/hermionne/credentials.json` et y mettre
+```
+{
+	"ff_profile_path": "/chemin/vers/home/snap/firefox/common/.mozilla/firefox/nom_du_profil"
+}
+```
+

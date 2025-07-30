@@ -1,13 +1,16 @@
+from typing import Any
 from pathlib import Path
+
 import yt_dlp
 
 
 import dirmanage
 from src.utilities_b import ytdlp_options
 from src.utilities_b import sanitize_filename
+from src.utilities_b import sanitize_yt_url
 from src.utilities import ciao
 from src.utilities import dprint
-_ = ciao, dprint
+_: Any = ciao, dprint
 
 youtube_dl = yt_dlp
 
@@ -15,7 +18,7 @@ youtube_dl = yt_dlp
 class YtVideo:
 
     def __init__(self, url: str):
-        self.url = url
+        self.url = sanitize_yt_url(url)
         self.infos = self.get_infos()
         self.outfile = self.get_outfile()
 
@@ -27,14 +30,13 @@ class YtVideo:
         timestamp = self.infos['timestamp']
         channel = self.infos["channel"]
         base_dir = dirmanage.base_dir
-        filename = f"wideo_{channel}_{timestamp}_{vid_id}_{title}.{ext}"
+        filename = f"wideo_{timestamp}_{channel}_{vid_id}_{title}.{ext}"
         filename = sanitize_filename(filename)
         return (base_dir / filename).resolve()
 
     def get_infos(self) -> dict:
         """Return the informations about the video."""
         ydl_opts = ytdlp_options(self)
-        ydl_opts.pop("cookiesfrombrowser", None)
         with youtube_dl.YoutubeDL(ydl_opts) as ydl:
             infos = ydl.extract_info(self.url, download=False)
         if infos is None:

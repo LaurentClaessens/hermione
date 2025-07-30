@@ -2,7 +2,7 @@
 
 import sys
 import yt_dlp
-from src.utilities_b import get_channel_id
+from src.utilities_c import get_channel_id
 
 youtube_dl = yt_dlp
 

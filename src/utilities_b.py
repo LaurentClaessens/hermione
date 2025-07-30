@@ -1,5 +1,7 @@
+import datetime
 from typing import Any
 from typing import TYPE_CHECKING
+from zoneinfo import ZoneInfo
 
 import yt_dlp
 
@@ -15,6 +17,34 @@ _: Any = dprint, print_json, ciao, always_true
 youtube_dl = yt_dlp
 if TYPE_CHECKING:
     from src.yt_video import YtVideo
+
+
+def build_cookies_arg():
+    """Return the cookie part of yt-dlp command line."""
+    ff_profile_path = get_key('ff_profile_path')
+    return ["--cookies-from-browser", f"firefox:{ff_profile_path}"]
+
+
+def add_cookies_arg(cmd_list:list[str])->list[str]:
+    """Add the cookies args to the yt command."""
+    cookies_args = build_cookies_arg()
+    arg_name = cookies_args[0]
+    arg_value = cookies_args[1]
+    cmd_list.insert(1,arg_name)
+    cmd_list.insert(2,arg_value)
+    return cmd_list
+
+
+def sanitize_yt_url(url: str) -> str:
+    """Remove the part after the first '&'"""
+    if not url.startswith("https"):
+        if len(url) != 11:
+            raise ValueError(f"Si c'est un code, il n'est pas complet : {url}")
+        url = f"https://www.youtube.com/watch?v={url}"
+    pos = url.find('&')
+    if pos != -1:
+        return url[0:pos]
+    return url
 
 
 def sanitize_filename(filename: str) -> str:
@@ -116,6 +146,8 @@ def is_ok_audio_format(note: str):
         return True
     if "Default" in note:
         return True
+    if 'medium' in note:
+        return True
     return False
 
 
@@ -132,7 +164,7 @@ def select_audio_format(video: 'YtVideo'):
         if is_ok_audio_format(note):
             ok_formats[ident] = note
 
-    words = ["high", "default"]
+    words = ["high", "default", "medium"]
     for word in words:
         for ident, note in ok_formats.items():
             if word in note:
@@ -145,3 +177,10 @@ def select_audio_format(video: 'YtVideo'):
 
     ciao("Tu dois séléctionner un format audio là-dedans")
     raise NoFormatFound('Pas de bon format audio trouvé')
+
+
+def filename_timestamp(timestamp:int)->str:
+    """Return a human readable ts to be used as filename."""
+    zone = ZoneInfo("Europe/Paris")
+    dt_object = datetime.datetime.fromtimestamp(timestamp, tz=zone)
+    return dt_object.strftime("%d_%b_%Y")

@@ -6,6 +6,7 @@ import yt_dlp
 
 import dirmanage
 from src.yt_video import YtVideo
+from src.utilities_b import add_cookies_arg
 from src.utilities_b import select_audio_format
 from src.utilities_b import select_vid_format
 from src.utilities_b import ytdlp_options
@@ -16,7 +17,9 @@ _ = ciao
 youtube_dl = yt_dlp
 
 
-def download(url):
+
+
+def download(url: str):
     """Download the video."""
     video = YtVideo(url)
 
@@ -37,9 +40,9 @@ def download(url):
     ydl_opts["format"] = format_id
 
     print("")
-    with youtube_dl.YoutubeDL(ydl_opts) as ydl:
-        print("out : ", ydl.get_output_path())
+    with youtube_dl.YoutubeDL(ydl_opts):
         bin_dir = dirmanage.base_dir / "venv" / "bin"
+
         with contextlib.chdir(bin_dir):
             cmd_list = ["./yt-dlp",
                         url,
@@ -47,6 +50,7 @@ def download(url):
                         format_id,
                         "-o",
                         str(outfile)]
+            cmd_list = add_cookies_arg(cmd_list)
 
             print(cmd_list)
 

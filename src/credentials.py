@@ -14,7 +14,7 @@ creds_dir = Path.home() / ".credentials" / "hermione"
 
 
 def get_key(name: str) -> str:
-    """Get the Cohere API key."""
+    """Get an api key."""
     key_json = read_json_file(creds_dir / 'credentials.json')
     api_key = key_json[name]
     return api_key
