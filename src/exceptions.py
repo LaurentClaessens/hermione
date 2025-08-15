@@ -11,3 +11,6 @@ class UnkownFormat(HermioneError):
 
 class NoFormatFound(HermioneError):
     """No good format is found."""
+
+class DlError(HermioneError):
+    """Download error."""

@@ -116,12 +116,6 @@ def get_second_best(formats: list[dict[str, Any]]):
 
 def select_vid_format(video: 'YtVideo') -> str:
     """Select the video format I want."""
-    infos = video.infos
-    channel_id = infos.get("channel_id")
-    if channel_id == "UCqA8H22FwgBVcF3GJpp0MQw":
-        print("Monsieur phi. Je prend résolution max.")
-        video.show_formats()
-        return "271"
 
     formats: list[dict[str, Any]] = []
     for j_format in infos['formats']:
@@ -148,7 +142,7 @@ def is_ok_audio_format(note: str):
         return True
     if 'medium' in note:
         return True
-    return False
+    return True
 
 
 def select_audio_format(video: 'YtVideo'):
@@ -164,12 +158,15 @@ def select_audio_format(video: 'YtVideo'):
         if is_ok_audio_format(note):
             ok_formats[ident] = note
 
-    words = ["high", "default", "medium"]
+    words = ["high", "default", "medium", "original", "360p"]
     for word in words:
+        dprint(f"je regarde si on a {word}")
         for ident, note in ok_formats.items():
+            dprint(f"et la note est : {note}")
             if word in note:
                 print(f"[Audio selection] {ident}: {note}")
                 return ident
+            dprint("non")
 
     print("Available audio formats:")
     for ident, note in all_audio.items():

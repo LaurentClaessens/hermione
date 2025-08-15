@@ -85,6 +85,7 @@ options = Options()
 
 jobs = []
 while True:
+    time.sleep(3)
     for url in get_new_urls(options):
         options.already_submited.append(url)
         one_job(url)
