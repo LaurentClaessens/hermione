@@ -14,3 +14,6 @@ class NoFormatFound(HermioneError):
 
 class DlError(HermioneError):
     """Download error."""
+
+class AlreadyDownloaded(HermioneError):
+    """Download error."""

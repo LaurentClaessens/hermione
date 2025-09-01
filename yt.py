@@ -4,9 +4,12 @@
 """Download a video from youtube."""
 
 import sys
+import contextlib
+
 import yt_dlp
 
 from src.download import download
+from src.exceptions import AlreadyDownloaded
 
 youtube_dl = yt_dlp
 
@@ -23,7 +26,8 @@ def do_work():
     """Do the work."""
     url = get_url(sys.argv[1])
     url = sys.argv[1]
-    download(url)
+    with contextlib.suppress(AlreadyDownloaded):
+        download(url)
 
 
 do_work()

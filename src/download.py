@@ -9,13 +9,14 @@ import yt_dlp
 import dirmanage
 from src.yt_video import YtVideo
 from src.exceptions import DlError
+from src.exceptions import AlreadyDownloaded
 from src.utilities_b import add_cookies_arg
 from src.utilities_b import select_audio_format
 from src.utilities_b import select_vid_format
 from src.utilities_b import ytdlp_options
-from src.utilities import write_json_file
 from src.utilities import ciao
-_:Any = ciao
+from src.utilities import dprint
+_:Any = ciao, dprint
 
 youtube_dl = yt_dlp
 
@@ -42,7 +43,7 @@ def select_format(video:YtVideo)->str:
     return format_id
 
 
-def is_ok_output_file(outfile:Path)->bool:
+def _is_ok_output_file(outfile:Path)->bool:
     """Say if the output file seems ok."""
     if not outfile.is_file():
         return False
@@ -54,15 +55,34 @@ def is_ok_output_file(outfile:Path)->bool:
     return True
 
 
+def is_ok_output_file(outfile:Path)->bool:
+    """
+    Say if the outpufile is ok.
+
+    It seems to me that sometimes yt-dlp adds '.mp4'
+    of '.mkv' to the filename I give.
+    """
+    if _is_ok_output_file(outfile):
+        return True
+
+    for new_ext in ["mp4", "mkv"]:
+        dirname = outfile.parent
+        name = outfile.name
+        new_filename = f"{name}.{new_ext}"
+        new_filename = dirname / new_filename
+        if _is_ok_output_file(new_filename):
+            return True
+    return False
+
+
 def download(url: str):
     """Download the video."""
     video = YtVideo(url)
-
-    write_json_file(video.infos, "infos.json", pretty=True)
     outfile = video.outfile
+    if is_ok_output_file(outfile):
+        raise AlreadyDownloaded
 
     format_id = select_format(video)
-
     print(f"format sélectionné: {format_id}")
 
     ydl_opts = ytdlp_options(video)
