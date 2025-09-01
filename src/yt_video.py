@@ -8,6 +8,7 @@ import dirmanage
 from src.utilities_b import ytdlp_options
 from src.utilities_b import sanitize_filename
 from src.utilities_b import sanitize_yt_url
+from src.utilities_b import filename_timestamp
 from src.utilities import ciao
 from src.utilities import dprint
 _: Any = ciao, dprint
@@ -30,7 +31,8 @@ class YtVideo:
         timestamp = self.infos['timestamp']
         channel = self.infos["channel"]
         base_dir = dirmanage.base_dir
-        filename = f"wideo_{timestamp}_{channel}_{vid_id}_{title}.{ext}"
+        fn_ts = filename_timestamp(timestamp)
+        filename = f"{timestamp}_{fn_ts}_{channel}_{vid_id}_{title}.{ext}"
         filename = sanitize_filename(filename)
         return (base_dir / filename).resolve()
 

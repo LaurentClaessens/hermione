@@ -1,3 +1,4 @@
+import locale
 import datetime
 from typing import Any
 from typing import TYPE_CHECKING
@@ -117,6 +118,7 @@ def get_second_best(formats: list[dict[str, Any]]):
 def select_vid_format(video: 'YtVideo') -> str:
     """Select the video format I want."""
 
+    infos = video.infos
     formats: list[dict[str, Any]] = []
     for j_format in infos['formats']:
         if is_video_format(j_format):
@@ -160,13 +162,10 @@ def select_audio_format(video: 'YtVideo'):
 
     words = ["high", "default", "medium", "original", "360p"]
     for word in words:
-        dprint(f"je regarde si on a {word}")
         for ident, note in ok_formats.items():
-            dprint(f"et la note est : {note}")
             if word in note:
                 print(f"[Audio selection] {ident}: {note}")
                 return ident
-            dprint("non")
 
     print("Available audio formats:")
     for ident, note in all_audio.items():
@@ -176,8 +175,9 @@ def select_audio_format(video: 'YtVideo'):
     raise NoFormatFound('Pas de bon format audio trouvé')
 
 
-def filename_timestamp(timestamp:int)->str:
-    """Return a human readable ts to be used as filename."""
+def filename_timestamp(ts:int):
+    """Return a human readable timestamp, but ok for filename."""
     zone = ZoneInfo("Europe/Paris")
-    dt_object = datetime.datetime.fromtimestamp(timestamp, tz=zone)
-    return dt_object.strftime("%d_%b_%Y")
+    dt_object = datetime.datetime.fromtimestamp(ts, tz=zone)
+    locale.setlocale(locale.LC_TIME, "fr_FR")
+    return dt_object.strftime("%d_%B_%Y")
