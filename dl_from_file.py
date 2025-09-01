@@ -9,14 +9,15 @@ Astuce dans nvim:
 
 import sys
 import time
-import random
 import contextlib
 
 import dirmanage
 from src.download import download
 from src.utilities import random_string
 from src.utilities import write_json_file
+from src.utilities import ColorOutput
 from src.exceptions import UnkownFormat
+from src.exceptions import AlreadyDownloaded
 
 
 class Options:
@@ -65,8 +66,6 @@ def get_new_urls(options: Options):
             print("")
             print("")
             urls.append(line)
-    # random.shuffle(urls)
-    _ = random
     return urls
 
 
@@ -86,12 +85,17 @@ options = Options()
 jobs = []
 while True:
     time.sleep(3)
-    for url in get_new_urls(options):
+    urls = get_new_urls(options)
+    for url in urls:
         options.already_submited.append(url)
-        one_job(url)
-        delay = 30
-        print(f"Attendre {delay}s pour ne pas faire peur à Google.")
-        time.sleep(delay)  # delay to avoid banishment from yt.
+        try:
+            one_job(url)
+        except AlreadyDownloaded:
+            pass
+        else:
+            delay = 30
+            print(f"Attendre {delay}s pour ne pas faire peur à Google.")
+            time.sleep(delay)  # delay to avoid banishment from yt.
         l_finished = len(options.finished)
-        l_submited = len(options.already_submited)
-        print(f"Done: {l_finished}/{l_submited}")
+        with ColorOutput("green"):
+            print(f"Done: {l_finished}/{len(urls)}")

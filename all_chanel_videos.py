@@ -7,12 +7,14 @@ Lancer ce script. Il crée un fichier `vids_UC7_gcs09iThXybpVgjHZ_7g.txt`.
 Utiliser le `dl_from_file.py`.
 """
 
+from typing import Any
+
 import json
 from pathlib import Path
 from src.utilities_c import get_channel_id
 from src.utilities import write_json_file
 from src.utilities import dprint
-_ = write_json_file, dprint
+_:Any = write_json_file, dprint
 
 
 HREF_TEXT = 'href="/watch?v='
@@ -117,8 +119,9 @@ def do_work(vid_url: str):
         txt_list += url + "\n"
 
     out_path = Path(f"vids_{channel_id}.txt")
+    print(f"save: {out_path}")
     out_path.write_text(txt_list)
 
 
-vid_url = 'https://www.youtube.com/watch?v=7wZPaovDH50'
+vid_url = 'https://www.youtube.com/watch?v=xxx'
 do_work(vid_url)
