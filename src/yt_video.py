@@ -30,7 +30,7 @@ class YtVideo:
         vid_id = self.infos['id']
         timestamp = self.infos['timestamp']
         channel = self.infos["channel"]
-        base_dir = dirmanage.base_dir
+        base_dir = dirmanage.base_dir / "downloads"
         fn_ts = filename_timestamp(timestamp)
         filename = f"{timestamp}_{fn_ts}_{channel}_{vid_id}_{title}.{ext}"
         filename = sanitize_filename(filename)
