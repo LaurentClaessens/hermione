@@ -88,6 +88,7 @@ def one_job(url: str):
         options.with_error.append(d_error)
     finally:
         options.finished.append(url)
+        options.already_submited.append(url)
 
 
 options = Options()
@@ -99,10 +100,10 @@ while True:
     new_urls = get_new_urls(options)
     urls.extend(new_urls)
     for url in urls:
-        print("Errors: ")
-        print_json(options.with_error)
         if url in options.already_submited:
             continue
+        print("Errors: ")
+        print_json(options.with_error)
         print(f"{len(options.finished)}/{len(urls)}")
         options.already_submited.append(url)
         one_job(url)
