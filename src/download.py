@@ -30,7 +30,7 @@ def select_format(video:YtVideo)->str:
     if channel_id == "UCqA8H22FwgBVcF3GJpp0MQw":
         print("Monsieur phi. Je prend résolution max.")
         video.show_formats()
-        return '625+234-1'
+        return '401+251-1'
 
     print("[select audio format]")
     audio_format = select_audio_format(video)
@@ -75,6 +75,18 @@ def is_ok_output_file(outfile:Path)->bool:
     return False
 
 
+def exec_yt(cmd_list:list[str]):
+    """Exec yt-dlp as external program."""
+    try:
+        subprocess.run(cmd_list)
+    except yt_dlp.utils.DownloadError as error:
+        str_error = str(error)
+        print(f"l'erreur vue est : {str_error}")
+        raise
+
+
+
+
 def download(url: str):
     """Download the video."""
     video = YtVideo(url)
@@ -94,7 +106,7 @@ def download(url: str):
 
         with contextlib.chdir(bin_dir):
             cmd_list = ["./yt-dlp",
-                        url,
+                        video.url,
                         "--format",
                         format_id,
                         "-o",
@@ -103,7 +115,7 @@ def download(url: str):
 
             print(cmd_list)
 
-            subprocess.run(cmd_list)
+            exec_yt(cmd_list)
             if not is_ok_output_file(outfile):
                 raise DlError(f"Error when downloading {outfile}")
 

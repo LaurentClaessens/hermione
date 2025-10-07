@@ -123,5 +123,5 @@ def do_work(vid_url: str):
     out_path.write_text(txt_list)
 
 
-vid_url = 'https://www.youtube.com/watch?v=xxx'
+vid_url = 'https://www.youtube.com/watch?v=TbeA1rhV0D0'
 do_work(vid_url)

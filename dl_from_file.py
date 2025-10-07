@@ -12,9 +12,11 @@ import time
 import contextlib
 
 import dirmanage
+from src.exceptions import LiveEventError
 from src.download import download
 from src.utilities import random_string
 from src.utilities import write_json_file
+from src.utilities import print_json
 from src.utilities import ColorOutput
 from src.exceptions import UnkownFormat
 from src.exceptions import AlreadyDownloaded
@@ -28,7 +30,7 @@ class Options:
         self.list_file = dirmanage.init_dir / sys.argv[1]
         filename = f"with_errors_{random_string(5)}.json"
         self.error_file = dirmanage.init_dir / filename
-        self.with_error: list[str] = []
+        self.with_error: list[dict[str,str]] = []
 
     def save_errors(self):
         """Save the file with error urls."""
@@ -74,8 +76,16 @@ def one_job(url: str):
     try:
         download(url)
     except UnkownFormat:
-        options.with_error.append(url)
+        d_error = {"url": url,
+                   "error": "unknown format"}
+        options.with_error.append(d_error)
         options.save_errors()
+    except AlreadyDownloaded:
+        pass
+    except LiveEventError as error:
+        d_error = {"url":url,
+                 "error": error.message}
+        options.with_error.append(d_error)
     finally:
         options.finished.append(url)
 
@@ -83,19 +93,22 @@ def one_job(url: str):
 options = Options()
 
 jobs = []
+urls:list[str] = []
 while True:
     time.sleep(3)
-    urls = get_new_urls(options)
+    new_urls = get_new_urls(options)
+    urls.extend(new_urls)
     for url in urls:
+        print("Errors: ")
+        print_json(options.with_error)
+        if url in options.already_submited:
+            continue
+        print(f"{len(options.finished)}/{len(urls)}")
         options.already_submited.append(url)
-        try:
-            one_job(url)
-        except AlreadyDownloaded:
-            pass
-        else:
-            delay = 30
-            print(f"Attendre {delay}s pour ne pas faire peur à Google.")
-            time.sleep(delay)  # delay to avoid banishment from yt.
+        one_job(url)
+        delay = 30
+        print(f"Attendre {delay}s pour ne pas faire peur à Google.")
+        time.sleep(delay)  # delay to avoid banishment from yt.
         l_finished = len(options.finished)
         with ColorOutput("green"):
             print(f"Done: {l_finished}/{len(urls)}")

@@ -17,3 +17,9 @@ class DlError(HermioneError):
 
 class AlreadyDownloaded(HermioneError):
     """Download error."""
+
+class LiveEventError(HermioneError):
+    """This is a live not yet published"""
+
+    def __init__(self, message:str):
+        self.message = message

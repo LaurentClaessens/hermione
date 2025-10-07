@@ -5,6 +5,7 @@ import yt_dlp
 
 
 import dirmanage
+from src.exceptions import LiveEventError
 from src.utilities_b import ytdlp_options
 from src.utilities_b import sanitize_filename
 from src.utilities_b import sanitize_yt_url
@@ -40,7 +41,14 @@ class YtVideo:
         """Return the informations about the video."""
         ydl_opts = ytdlp_options(self)
         with youtube_dl.YoutubeDL(ydl_opts) as ydl:
-            infos = ydl.extract_info(self.url, download=False)
+            try:
+                infos = ydl.extract_info(self.url, download=False)
+            except yt_dlp.utils.DownloadError as error:
+                str_error = str(error)
+                if "This live event will begin" in str_error:
+                    raise LiveEventError(str_error)
+                print(f"l'erreur vue est : {str_error}")
+                raise
         if infos is None:
             raise TypeError("Connot download the infos")
         return infos
